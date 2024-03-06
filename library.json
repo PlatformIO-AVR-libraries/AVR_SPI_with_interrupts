@@ -1,0 +1,18 @@
+{
+    "name": "AVR_SPI_with_interrupts",
+    "version": "1.0.0",
+    "description": "AVR_SPI_with_interrupts is a library that simplifies use of SPI interface for AVRxmega devices, that have a dedicated SPI module.",
+    "keywords": "avr, register, macro, SPI, interrupts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PlatformIO-AVR-libraries/AVR_SPI_with_interrupts.git"
+    },
+    "authors": {
+        "name": "Lukas Ternjej",
+        "email": "lukas.ternjej@gmail.com",
+        "url": "https://github.com/SkasLT",
+        "maintainer": true
+    },
+    "license": "MIT",
+    "platforms": "atmelavr"
+}
