@@ -58,7 +58,7 @@
 
 // warn if user set more than 8 data bytes which is outside uint64_t variable size limit
 #if HEX_DATA_BYTES > 8
-    #warning "[HEX_DATA_BYTES] can't be more than 8! Program might behave in unexpected ways!"
+    #error "[HEX_DATA_BYTES] can't be more than 8!"
 #endif
 
 /**
