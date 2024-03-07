@@ -17,8 +17,6 @@
  */
 
 // Define number of hex data bytes that are going to be received via SPI.
-// It is not necessary to define [HEX_DATA_BYTES] for slave device, but it will
-// prevent a compiler warning.
 #define HEX_DATA_BYTES 2
 
 // custom libraries
@@ -59,7 +57,7 @@ int main(void)
         if(SPI_readAll() == true)     // check if [DATA_END_CHAR] is reached
         {
             // convert individual hex bytes from SPI_data[] buffer to single uint_64 hex value
-            uint64_t data = hexArrayToHex(&SPI_data[0]);
+            uint64_t data = hexArrayToHex(&SPI_data[0], HEX_DATA_BYTES);
 
             if(data == LED_ON)
                 LED_PORTx |= (1 << LED_PORTxn);      // turn led on if LED_ON is received

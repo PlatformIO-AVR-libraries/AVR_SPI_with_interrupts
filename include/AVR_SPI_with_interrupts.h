@@ -11,15 +11,15 @@
 #ifndef AVR_SPI_WITH_INTERRUPTS_H_
 #define AVR_SPI_WITH_INTERRUPTS_H_
 
-#include "AVR_SPI_char_defines.h"
-#include "AVR_SPI_pin_defines.h"
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <util/delay.h>
+
+#include "AVR_SPI_char_defines.h"
+#include "AVR_SPI_pin_defines.h"
 
 // bit order
 #define LSB_FIRST 0x20     // start data transmission with least significant bit first
@@ -74,26 +74,27 @@
 void SPI_init(uint8_t deviceMode, uint8_t dataOrder, uint8_t SPIMode, uint8_t clockRate);
 
 /**
- * Function that returns a character from master SPDR register
+ * Function that returns an uint8_t from master SPDR register
  * Write dummy data to SPDR register to generate SCK for transmission
  *
- * @return returns a char from SPSR register
+ * @return returns a uint8_t from SPDR register
  */
-char SPI_masterReadChar();
+uint8_t SPI_masterReadUint8_t();
 
 /**
- * Function that returns a character from SPDR register
+ * Function that returns an uint8_t from SPDR register
  *
- * @return returns a char from SPSR register
+ * @return returns a uint8_t from SPDR register
  */
-char SPI_readChar();
+uint8_t SPI_readUint8_t();
 
 /**
- * Function that flushes a buffer and sets all array elements to '\0'
+ * Function that sets all array elements to '\0'
  *
  * @param array array to be flushed
+ * @param size number of array elements
  */
-void flushBuffer(char array[]);
+void flushBuffer(uint8_t array[], size_t size);
 
 /**
  * Function that checks if SPI data transmiossion is complete.
@@ -103,30 +104,30 @@ void flushBuffer(char array[]);
 bool SPI_readAll(void);
 
 /**
- * Function that writes a char in SPDR register. When in master mode,
+ * Function that writes an uint8_t in SPDR register. When in master mode,
  * writing to the SPDR register generates SPI clock.
  *
- * @param c character that is going to be written to SPDR register
+ * @param data uint8_t that is going to be written to SPDR register
  */
-void SPI_masterPutChar(char c);
+void SPI_masterPutUint8_t(uint8_t data);
 
 /**
- * Writes a character to SPDR register
+ * Writes an uint8_t to SPDR register
  *
- * @param c character that is going to be written to SPDR register
+ * @param data uint8_t that is going to be written to SPDR register
  */
-void SPI_putChar(char c);
+void SPI_putUint8_t(uint8_t data);
 
 /**
- * Function for transmitting a character via SPI, with SS line control.
+ * Function for transmitting an uint8_t via SPI, with SS line control.
  *
  * @param SS_PORTx Slave select PORTx register
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param c character that is going to be sent via SPI
+ * @param data uint8_t that is going to be sent via SPI
  */
-void SPI_transmitChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char c);
+void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t data);
 
 /**
  * Function for transmitting a string via SPI, with SS line control
@@ -135,20 +136,20 @@ void SPI_transmitChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSm
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param c char pointer that pints to an array element (string)
+ * @param data uint8_t pointer that pints to an array element (string)
  */
-void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char *c);
+void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t *data);
 
 /**
- * Function that reads a char from SPDR, with SS line control
+ * Function that reads an uint8_t from SPDR, with SS line control
  *
  * @param SS_PORTxSlave select PORTx register
  * @param SS_PORTxnSlave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @return A char that is read from SPDR register
+ * @return A uint8_t that is read from SPDR register
  */
-char SPI_receiveChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode);
+uint8_t SPI_receiveUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode);
 
 /**
  * Function for converting an array of hex values to single hex value.
@@ -156,9 +157,10 @@ char SPI_receiveChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmo
  * hex value from all array elements.
  *
  * @param array array of hex values that are going to be combined
+ * @param size number of array elements
  * @return uint64_t value that represents all hex values combined from an array
  */
-uint64_t hexArrayToHex(char array[]);
+uint64_t hexArrayToHex(uint8_t array[], size_t size);
 
 /**
  * Function for transmitting a hex number via SPI, with SS line control.

@@ -49,12 +49,12 @@ void SPI_init(uint8_t deviceMode, uint8_t dataOrder, uint8_t SPIMode, uint8_t cl
 }
 
 /**
- * Function that returns a character from master SPDR register
+ * Function that returns an uint8_t from master SPDR register
  * Write dummy data to SPDR register to generate SCK for transmission
  *
- * @return returns a char from SPSR register
+ * @return returns a uint8_t from SPDR register
  */
-char SPI_masterReadChar()
+uint8_t SPI_masterReadUint8_t()
 {
     SPDR = 0xFF;     // writing to SPDR generates SCK for transmission, write dummy data in the SPDR register
 
@@ -65,11 +65,11 @@ char SPI_masterReadChar()
 }
 
 /**
- * Function that returns a character from master SPDR register
+ * Function that returns an uint8_t from SPDR register
  *
- * @return returns a char from SPDR register
+ * @return returns a uint8_t from SPDR register
  */
-char SPI_readChar()
+uint8_t SPI_readUint8_t()
 {
     while(!(SPSR & (1 << SPIF)))
         ;
@@ -77,17 +77,26 @@ char SPI_readChar()
     return SPDR;
 }
 
-char SPI_data[DATA_LENGTH] = {'\0'};
-volatile char SPI_buffer[DATA_LENGTH];
+uint8_t SPI_data[DATA_LENGTH] = {'\0'};
+volatile uint8_t SPI_buffer[DATA_LENGTH] = {'\0'};
 volatile uint8_t dataIndex = 0;
+
 volatile bool dataReceived = false;
+volatile size_t receivedBytes = 0;
 
 // read SPI data in ISR routine
 ISR(SPI_STC_vect)
 {
     SPI_buffer[dataIndex] = SPDR;
 
-    if(SPI_buffer[dataIndex++] == DATA_END_CHAR)
+    if(SPI_buffer[dataIndex] != DATA_END_CHAR)
+    {
+        // increment dataIndex and count the number of received bytes in a message
+        dataIndex++;
+        receivedBytes++;
+    }
+
+    else
     {
         dataReceived = true;
         dataIndex = 0;
@@ -95,15 +104,14 @@ ISR(SPI_STC_vect)
 }
 
 /**
- * Function that flushes a buffer and sets all array elements to '\0'
+ * Function that sets all array elements to '\0'
  *
  * @param array array to be flushed
+ * @param size number of array elements
  */
-void flushBuffer(char array[])
+void flushBuffer(uint8_t array[], size_t size)
 {
-    uint8_t size = strlen(array);
-
-    for(int i = 0; i < size; i++)
+    for(size_t i = 0; i < size; i++)
         array[i] = '\0';
 }
 
@@ -117,10 +125,9 @@ bool SPI_readAll()
     if(dataReceived == true)
     {
         // flush SPI_data[] from previous data before reading next message
-        flushBuffer(SPI_data);
+        flushBuffer(SPI_data, receivedBytes);
 
         int i = 0;
-
         // read new data into SPI_data
         while(SPI_buffer[i] != DATA_END_CHAR)
         {
@@ -129,10 +136,11 @@ bool SPI_readAll()
         }
 
         // clear volatile array and set all array elements to '\0'
-        for(int i = 0; i < DATA_LENGTH; i++)
+        for(size_t i = 0; i < receivedBytes; i++)
             SPI_buffer[i] = '\0';
 
         dataReceived = false;
+        receivedBytes = 0;
 
         return true;
     }
@@ -142,44 +150,44 @@ bool SPI_readAll()
 }
 
 /**
- * Function that writes a char in SPDR register. When in master mode,
+ * Function that writes an uint8_t in SPDR register. When in master mode,
  * writing to the SPDR register generates SPI clock.
  *
- * @param c character that is going to be written to SPDR register
+ * @param data uint8_t that is going to be written to SPDR register
  */
-void SPI_masterPutChar(char c)
+void SPI_masterPutUint8_t(uint8_t data)
 {
-    SPDR = c;     // write data to SPI data register
+    SPDR = data;     // write data to SPI data register
 
     while(!(SPSR & (1 << SPIF)))
-        ;         // wait till transmission complete
+        ;            // wait till transmission complete
 }
 
 /**
- * Writes a character to SPDR register
+ * Writes an uint8_t to SPDR register
  *
- * @param c character that is going to be written to SPDR register
+ * @param data uint8_t that is going to be written to SPDR register
  */
-void SPI_putChar(char c)
+void SPI_putUint8_t(uint8_t data)
 {
     // Wait for empty transmit buffer
     while(!(SPSR & (1 << SPIF)))
         ;
 
     // Put data into buffer
-    SPDR = c;
+    SPDR = data;
 }
 
 /**
- * Function for transmitting a character via SPI, with SS line control.
+ * Function for transmitting an uint8_t via SPI, with SS line control.
  *
  * @param SS_PORTx Slave select PORTx register
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param c character that is going to be sent via SPI
+ * @param data uint8_t that is going to be sent via SPI
  */
-void SPI_transmitChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char c)
+void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t data)
 {
     uint8_t pullHigh = (*SS_PORTx) | (1 << SS_PORTxn);
     uint8_t pullLow = (*SS_PORTx) & ~(1 << SS_PORTxn);
@@ -187,8 +195,8 @@ void SPI_transmitChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSm
     // in inverted mode pull SS pin high to start transmision
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullLow + (SSmode == INVERTED_SS_CONTROL) * pullHigh;
 
-    SPI_masterPutChar(c);                 // write data to SPDR register
-    SPI_masterPutChar(DATA_END_CHAR);     // terminate with [DATA_END_CHAR]
+    SPI_masterPutUint8_t(data);              // write data to SPDR register
+    SPI_masterPutUint8_t(DATA_END_CHAR);     // terminate with [DATA_END_CHAR]
 
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullHigh + (SSmode == INVERTED_SS_CONTROL) * pullLow;
     // in default mode pull SS pin high to end transmision
@@ -202,9 +210,9 @@ void SPI_transmitChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSm
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param c char pointer that pints to an array element (string)
+ * @param data uint8_t pointer that pints to an array element (string)
  */
-void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char *c)
+void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t *data)
 {
     uint8_t pullHigh = (*SS_PORTx) | (1 << SS_PORTxn);
     uint8_t pullLow = (*SS_PORTx) & ~(1 << SS_PORTxn);
@@ -212,13 +220,13 @@ void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t S
     // in inverted mode pull SS pin high to start transmision
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullLow + (SSmode == INVERTED_SS_CONTROL) * pullHigh;
 
-    while(*c)
+    while(*data)
     {
-        SPI_masterPutChar(*c);     // write data to SPDR register
-        c++;
+        SPI_masterPutUint8_t(*data);     // write data to SPDR register
+        data++;
     }
 
-    SPI_masterPutChar(DATA_END_CHAR);     // terminate with [DATA_END_CHAR]
+    SPI_masterPutUint8_t(DATA_END_CHAR);     // terminate with [DATA_END_CHAR]
 
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullHigh + (SSmode == INVERTED_SS_CONTROL) * pullLow;
     // in default mode pull SS pin high to end transmision
@@ -226,15 +234,15 @@ void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t S
 }
 
 /**
- * Function that reads a char from SPDR, with SS line control
+ * Function that reads an uint8_t from SPDR, with SS line control
  *
  * @param SS_PORTxSlave select PORTx register
  * @param SS_PORTxnSlave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @return A char that is read from SPDR register
+ * @return A uint8_t that is read from SPDR register
  */
-char SPI_receiveChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode)
+uint8_t SPI_receiveUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode)
 {
     uint8_t pullHigh = (*SS_PORTx) | (1 << SS_PORTxn);
     uint8_t pullLow = (*SS_PORTx) & ~(1 << SS_PORTxn);
@@ -242,13 +250,13 @@ char SPI_receiveChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmo
     // in inverted mode pull SS pin high to start transmision
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullLow + (SSmode == INVERTED_SS_CONTROL) * pullHigh;
 
-    char c = SPI_masterReadChar();     // read data from SPDR register
+    uint8_t data = SPI_masterReadUint8_t();     // read data from SPDR register
 
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullHigh + (SSmode == INVERTED_SS_CONTROL) * pullLow;
     // in default mode pull SS pin high to end transmision
     // in inverted mode pull SS pin low to end transmision
 
-    return c;
+    return data;
 }
 
 /**
@@ -257,14 +265,14 @@ char SPI_receiveChar(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmo
  * hex value from all array elements.
  *
  * @param array array of hex values that are going to be combined
+ * @param size number of array elements
  * @return uint64_t value that represents all hex values combined from an array
  */
-uint64_t hexArrayToHex(char array[])
+uint64_t hexArrayToHex(uint8_t array[], size_t size)
 {
-    uint8_t size = strlen(array);
     uint64_t combinedHex = 0;
 
-    for(int i = 0; i < size; i++)
+    for(size_t i = 0; i < size; i++)
         combinedHex = (combinedHex << 8) | array[i];
 
     return combinedHex;
@@ -294,9 +302,9 @@ void SPI_transmitHex(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmo
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullLow + (SSmode == INVERTED_SS_CONTROL) * pullHigh;
 
     for(int i = numBytes - 1; i >= 0; i--)
-        SPI_masterPutChar((hexNumber >> (i * 8)) & mask);     // Send each byte of the hexadecimal number
+        SPI_masterPutUint8_t((hexNumber >> (i * 8)) & mask);     // Send each byte of the hexadecimal number
 
-    SPI_masterPutChar(DATA_END_CHAR);                         // terminate with [DATA_END_CHAR]
+    SPI_masterPutUint8_t(DATA_END_CHAR);                         // terminate with [DATA_END_CHAR]
 
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullHigh + (SSmode == INVERTED_SS_CONTROL) * pullLow;
     // in default mode pull SS pin high to end transmision

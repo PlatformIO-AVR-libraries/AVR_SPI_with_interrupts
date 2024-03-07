@@ -11,7 +11,7 @@
  * Slave device toggles an LED when receiving the message.
  * Default connection for SS pin is used, refer to ATmega32 datasheet (see ATmega32 pinout).
  *
- * @date 2024-03-06
+ * @date 2024-03-07
  */
 
 // Define number of hex data bytes that are going to be sent via SPI.
@@ -45,12 +45,15 @@ int main(void)
 {
     init();
 
+    // string command that is going to be sent via SPI
+    uint8_t stringCommand[] = STRING_COMMAND;
+
     _delay_ms(1000);     // wait a bit for slave to initialize before sending commands
 
     while(1)
     {
         // transmit string command every 500ms:
-        SPI_transmitString(&SPI_PORTx, SS_PIN_PORTxn, DEFAULT_SS_CONTROL, STRING_COMMAND);
+        SPI_transmitString(&SPI_PORTx, SS_PIN_PORTxn, DEFAULT_SS_CONTROL, stringCommand);
         _delay_ms(500);
     }
 

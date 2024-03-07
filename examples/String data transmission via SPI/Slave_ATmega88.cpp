@@ -13,7 +13,7 @@
  *
  * LED with a series 220R resistor is connected from PORTC5 to GND.
  *
- * @date 2024-03-06
+ * @date 2024-03-07
  */
 
 // Define number of hex data bytes that are going to be received via SPI.
@@ -32,10 +32,11 @@
 #include <util/delay.h>
 
 // define led ports
-#define LED_DDRx       DDRC
-#define LED_PORTx      PORTC
-#define LED_PORTxn     PC5
+#define LED_DDRx   DDRC
+#define LED_PORTx  PORTC
+#define LED_PORTxn PC5
 
+// string command that is going to be sent via SPI
 #define STRING_COMMAND "TOGGLE"
 
 static void init()
@@ -57,7 +58,7 @@ int main(void)
         if(SPI_readAll() == true)     // check if [DATA_END_CHAR] is reached
         {
             // compare data from SPI_data[] buffer with [STRING_COMMAND]
-            if(!strcmp(SPI_data, STRING_COMMAND))
+            if(!strcmp((char *)SPI_data, STRING_COMMAND))
                 LED_PORTx ^= (1 << LED_PORTxn);     // toggle LED when receiving command
         }
     }
