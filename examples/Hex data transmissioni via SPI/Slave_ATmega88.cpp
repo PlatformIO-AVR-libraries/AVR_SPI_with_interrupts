@@ -13,7 +13,7 @@
  *
  * LED with a series 220R resistor is connected from PORTC5 to GND.
  *
- * @date 2024-03-06
+ * @date 2024-03-07
  */
 
 // Define number of hex data bytes that are going to be received via SPI.
@@ -57,13 +57,17 @@ int main(void)
         if(SPI_readAll() == true)     // check if [DATA_END_CHAR] is reached
         {
             // convert individual hex bytes from SPI_data[] buffer to single uint_64 hex value
-            uint64_t data = hexArrayToHex(&SPI_data[0], HEX_DATA_BYTES);
+            uint64_t data = hexArrayToUint64_t(&SPI_data[0], HEX_DATA_BYTES);
 
-            if(data == LED_ON)
+            switch(data)
+            {
+            case LED_ON:
                 LED_PORTx |= (1 << LED_PORTxn);      // turn led on if LED_ON is received
-
-            else if(data == LED_OFF)
+                break;
+            case LED_OFF:
                 LED_PORTx &= ~(1 << LED_PORTxn);     // turn led off if LED_OFF is received
+                break;
+            }
         }
     }
 

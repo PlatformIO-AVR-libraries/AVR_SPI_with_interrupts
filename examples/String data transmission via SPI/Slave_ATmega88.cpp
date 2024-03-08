@@ -53,12 +53,15 @@ int main(void)
 {
     init();
 
+    // string that is going to be received via SPI
+    char command[] = "TOGGLE";
+
     while(1)
     {
         if(SPI_readAll() == true)     // check if [DATA_END_CHAR] is reached
         {
             // compare data from SPI_data[] buffer with [STRING_COMMAND]
-            if(!strcmp((char *)SPI_data, STRING_COMMAND))
+            if(!SPI_strcmp(SPI_data, command))
                 LED_PORTx ^= (1 << LED_PORTxn);     // toggle LED when receiving command
         }
     }

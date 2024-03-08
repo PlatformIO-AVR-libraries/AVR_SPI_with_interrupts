@@ -28,9 +28,6 @@
 #include <stdlib.h>
 #include <util/delay.h>
 
-// string command that is going to be sent via SPI
-#define STRING_COMMAND "TOGGLE"
-
 static void init(void)
 {
     // SPI init
@@ -45,15 +42,15 @@ int main(void)
 {
     init();
 
-    // string command that is going to be sent via SPI
-    uint8_t stringCommand[] = STRING_COMMAND;
+    // string that is going to be transmitted via SPI
+    char command[] = "TOGGLE";
 
     _delay_ms(1000);     // wait a bit for slave to initialize before sending commands
 
     while(1)
     {
         // transmit string command every 500ms:
-        SPI_transmitString(&SPI_PORTx, SS_PIN_PORTxn, DEFAULT_SS_CONTROL, stringCommand);
+        SPI_transmitString(&SPI_PORTx, SS_PIN_PORTxn, DEFAULT_SS_CONTROL, command);
         _delay_ms(500);
     }
 

@@ -4,7 +4,7 @@
  *
  * Interrupt driven SPI library .cpp file
  *
- * @date 2024-03-06
+ * @date 2024-03-07
  */
 
 #include "AVR_SPI_with_interrupts.h"
@@ -116,6 +116,26 @@ void flushBuffer(uint8_t array[], size_t size)
 }
 
 /**
+ * Function that compares two strings. First string consists of uint8_t characters, second string consists of char characters.
+ *
+ * @param str1 string of uint8_t characters
+ * @param str2 string of char characters
+ * @return 0 if strings are equal, >0 if the first non-matching character in str1 is greater (in ASCII) than that of str2,
+ * <0 	if the first non-matching character in str1 is lower (in ASCII) than that of str2
+ */
+int SPI_strcmp(uint8_t *str1, char *str2)
+{
+    unsigned char *pstr2 = (unsigned char *)str2;
+
+    while((*str1) && (*str1 == *pstr2))
+    {
+        ++str1;
+        ++pstr2;
+    }
+    return (*str1 - *pstr2);
+}
+
+/**
  * Function that checks if SPI data transmiossion is complete.
  *
  * @return Returns true if [STRING_END_CHAR] is reached, else return false
@@ -204,15 +224,15 @@ void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t 
 }
 
 /**
- * Function for transmitting a string via SPI, with SS line control
+ * Function for transmitting a string of chars via SPI, with SS line control
  *
  * @param SS_PORTx Slave select PORTx register
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param data uint8_t pointer that pints to an array element (string)
+ * @param data char pointer that pints to an array element (string)
  */
-void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t *data)
+void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char *data)
 {
     uint8_t pullHigh = (*SS_PORTx) | (1 << SS_PORTxn);
     uint8_t pullLow = (*SS_PORTx) & ~(1 << SS_PORTxn);
@@ -260,15 +280,14 @@ uint8_t SPI_receiveUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_
 }
 
 /**
- * Function for converting an array of hex values to single hex value.
- * Takes an array that stores individual hex values and returns combined uint64_t
- * hex value from all array elements.
+ * Takes an array that stores individual uint8_t values and returns combined uint64_t
+ * value from all array elements.
  *
  * @param array array of hex values that are going to be combined
  * @param size number of array elements
  * @return uint64_t value that represents all hex values combined from an array
  */
-uint64_t hexArrayToHex(uint8_t array[], size_t size)
+uint64_t hexArrayToUint64_t(uint8_t array[], size_t size)
 {
     uint64_t combinedHex = 0;
 

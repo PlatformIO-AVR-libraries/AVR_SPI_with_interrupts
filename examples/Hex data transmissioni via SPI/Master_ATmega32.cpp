@@ -11,7 +11,7 @@
  * Slave device turns on or off LED depending on the command sent by master.
  * Default connection for SS pin is used, refer to ATmega32 datasheet (see ATmega32 pinout).
  *
- * @date 2024-03-06
+ * @date 2024-03-07
  */
 
 // define number of hex data bytes that are going to be sent via SPI
