@@ -4,7 +4,7 @@
  *
  * Header file for defining control characters for SPI library.
  *
- * @date 2024-03-06
+ * @date 2024-03-08
  */
 
 #ifndef AVR_SPI_CHAR_DEFINES_H_

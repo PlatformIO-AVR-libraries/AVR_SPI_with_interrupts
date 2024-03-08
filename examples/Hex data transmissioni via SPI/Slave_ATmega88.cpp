@@ -13,11 +13,8 @@
  *
  * LED with a series 220R resistor is connected from PORTC5 to GND.
  *
- * @date 2024-03-07
+ * @date 2024-03-08
  */
-
-// Define number of hex data bytes that are going to be received via SPI.
-#define HEX_DATA_BYTES 2
 
 // custom libraries
 #include <AVR_SPI_with_interrupts.h>
@@ -33,6 +30,10 @@
 #define LED_DDRx   DDRC
 #define LED_PORTx  PORTC
 #define LED_PORTxn PC5
+
+// Define number of hex data bytes that are going to be received via SPI.
+//! make sure that HEX_DATA_BYTES is <= 8, or the program might behave unexpectedly!
+#define HEX_DATA_BYTES 2
 
 // hex commands that are going to be received via SPI
 #define LED_ON  0x1234

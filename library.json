@@ -1,6 +1,6 @@
 {
     "name": "AVR_SPI_with_interrupts",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "AVR_SPI_with_interrupts is a library that simplifies use of SPI interface for AVRxmega devices, that have a dedicated SPI module.",
     "keywords": "avr, register, macro, SPI, interrupts",
     "repository": {

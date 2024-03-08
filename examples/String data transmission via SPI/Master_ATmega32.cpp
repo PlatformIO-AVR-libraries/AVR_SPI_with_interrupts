@@ -11,13 +11,8 @@
  * Slave device toggles an LED when receiving the message.
  * Default connection for SS pin is used, refer to ATmega32 datasheet (see ATmega32 pinout).
  *
- * @date 2024-03-07
+ * @date 2024-03-08
  */
-
-// Define number of hex data bytes that are going to be sent via SPI.
-// It is not necessary to define [HEX_DATA_BYTES] when transmitting string message,
-// but it will prevent a compiler warning.
-#define HEX_DATA_BYTES 2
 
 // custom libraries
 #include <AVR_SPI_with_interrupts.h>

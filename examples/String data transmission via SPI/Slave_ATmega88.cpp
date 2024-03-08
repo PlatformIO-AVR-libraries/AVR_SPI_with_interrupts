@@ -13,13 +13,8 @@
  *
  * LED with a series 220R resistor is connected from PORTC5 to GND.
  *
- * @date 2024-03-07
+ * @date 2024-03-08
  */
-
-// Define number of hex data bytes that are going to be received via SPI.
-// It is not necessary to define [HEX_DATA_BYTES] for slave device, but it will
-// prevent a compiler warning.
-#define HEX_DATA_BYTES 2
 
 // custom libraries
 #include <AVR_SPI_with_interrupts.h>
@@ -36,9 +31,6 @@
 #define LED_PORTx  PORTC
 #define LED_PORTxn PC5
 
-// string command that is going to be sent via SPI
-#define STRING_COMMAND "TOGGLE"
-
 static void init()
 {
     // SPI init
@@ -53,7 +45,6 @@ int main(void)
 {
     init();
 
-    // string that is going to be received via SPI
     char command[] = "TOGGLE";
 
     while(1)

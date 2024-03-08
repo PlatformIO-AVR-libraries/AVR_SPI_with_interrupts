@@ -4,7 +4,7 @@
  *
  * Interrupt driven SPI library .cpp file
  *
- * @date 2024-03-07
+ * @date 2024-03-08
  */
 
 #include "AVR_SPI_with_interrupts.h"
@@ -28,11 +28,9 @@ void SPI_init(uint8_t deviceMode, uint8_t dataOrder, uint8_t SPIMode, uint8_t cl
         SPI_DDRx &= ~(1 << MISO_PIN_PORTxn);     // set MISO pin as input
         SPCR |= (1 << MSTR);                     // set device SPI in master mode
 
-        // these clock rates requre setting bits in both SPCR and SPSR registers
-        if((clockRate == FOSC_DIV2) || (clockRate == FOSC_DIV8) || (clockRate == FOSC_DIV32))
-            SPSR |= (1 << SPI2X);     // FOSC_DIV2, FOSC_DIV8, FOSC_DIV32 require setting bit SPI2X in SPSR
-
-        SPCR |= clockRate;            // set clock rate
+        // set SPI clock rate
+        SPCR |= (clockRate & FOSC_MASK);
+        SPSR |= (clockRate >> 2);
     }
 
     else
@@ -125,14 +123,7 @@ void flushBuffer(uint8_t array[], size_t size)
  */
 int SPI_strcmp(uint8_t *str1, char *str2)
 {
-    unsigned char *pstr2 = (unsigned char *)str2;
-
-    while((*str1) && (*str1 == *pstr2))
-    {
-        ++str1;
-        ++pstr2;
-    }
-    return (*str1 - *pstr2);
+    return strcmp((char *)(str1), str2);
 }
 
 /**
@@ -300,7 +291,6 @@ uint64_t hexArrayToUint64_t(uint8_t array[], size_t size)
 /**
  * Function for transmitting a hex number via SPI, with SS line control.
  ** For numBytes parameter, it is recommended to define a custom value called [HEX_DATA_BYTES].
- ** By defining [HEX_DATA_BYTES] a compiler warning is avoided, or else it is set to 8.
  *! [HEX_DATA_BYTES] has to be less or equal to 8!
  *
  * @param SS_PORTx Slave select PORTx register

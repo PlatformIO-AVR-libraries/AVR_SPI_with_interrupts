@@ -11,11 +11,8 @@
  * Slave device turns on or off LED depending on the command sent by master.
  * Default connection for SS pin is used, refer to ATmega32 datasheet (see ATmega32 pinout).
  *
- * @date 2024-03-07
+ * @date 2024-03-08
  */
-
-// define number of hex data bytes that are going to be sent via SPI
-#define HEX_DATA_BYTES 2
 
 // custom libraries
 #include <AVR_SPI_with_interrupts.h>
@@ -25,6 +22,10 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <util/delay.h>
+
+// Define number of hex data bytes that are going to be transmitted via SPI.
+//! make sure that HEX_DATA_BYTES is <= 8, or the program might behave unexpectedly!
+#define HEX_DATA_BYTES 2
 
 // hex commands that are going to be sent via SPI
 #define LED_ON  0x1234

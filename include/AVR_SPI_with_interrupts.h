@@ -5,7 +5,7 @@
  * Header file that is going to be included in main project file
  * Defines all necessary functions, constants and variables.
  *
- * @date 2024-03-06
+ * @date 2024-03-08
  */
 
 #ifndef AVR_SPI_WITH_INTERRUPTS_H_
@@ -23,43 +23,35 @@
 
 // bit order
 #define LSB_FIRST 0x20     // start data transmission with least significant bit first
-#define MSB_FIRST 0x0      // start data transmission with most significant bit first
+#define MSB_FIRST 0x00     // start data transmission with most significant bit first
 
 // Master/slave mode
 #define MASTER_MODE 1     // SPI device in master mode
 #define SLAVE_MODE  0     // SPI device in slave mode
 
 // SPI mode
-#define SPI_MODE_0 0x0      // clock logic low when idle, data sampled on rising edge, shifted out on falling edge
+#define SPI_MODE_0 0x00     // clock logic low when idle, data sampled on rising edge, shifted out on falling edge
 #define SPI_MODE_1 0x04     // clock logic low when idle, data sampled on falling edge, shifted out on rising edge
 #define SPI_MODE_2 0x08     // clock logic high when idle, data sampled on rising edge, shifted out on falling edge
 #define SPI_MODE_3 0x0C     // clock logic high when idle, data sampled on falling edge, shifted out on rising edge
 
+// mask for setting SPI fosc
+#define FOSC_MASK 0x03     // 0b00000011
+
 // SPI clock rate
-#define FOSC_DIV4   0x0      // FCPU/4
-#define FOSC_DIV16  0x01     // FCPU/16
-#define FOSC_DIV64  0x02     // FCPU/64
-#define FOSC_DIV128 0x03     // FCPU/128
+#define FOSC_DIV4   0x00     // FCPU/4, in binary form 0b00000000
+#define FOSC_DIV16  0x01     // FCPU/16, in binary form 0b00000001
+#define FOSC_DIV64  0x02     // FCPU/64, in binary form 0b00000010
+#define FOSC_DIV128 0x03     // FCPU/128, in binary form 0b00000011
 
 // these SPI clock rates require setting SPI2X bit in SPSR register and specific bits in SPCR
-#define FOSC_DIV2  FOSC_DIV4      // FCPU/2
-#define FOSC_DIV8  FOSC_DIV16     // FCPU/8
-#define FOSC_DIV32 FOSC_DIV64     // FCPU/32
+#define FOSC_DIV2  0x04     // FCPU/2, in binary form 0b00000100
+#define FOSC_DIV8  0x05     // FCPU/8, in binary form 0b00000101
+#define FOSC_DIV32 0x06     // FCPU/32, in binary form 0b00000110
 
 // default or inverted SS line controll
 #define INVERTED_SS_CONTROL 0
 #define DEFAULT_SS_CONTROL  1
-
-// warn if user didn't manually set [HEX_DATA_BYTES]
-#ifndef HEX_DATA_BYTES
-    #warning "[HEX_DATA_BYTES] is not defined in main file! It will default to 8."
-    #define HEX_DATA_BYTES 8     // maximum of 8 bytes for hex message
-#endif
-
-// warn if user set more than 8 data bytes which is outside uint64_t variable size limit
-#if HEX_DATA_BYTES > 8
-    #error "[HEX_DATA_BYTES] can't be more than 8!"
-#endif
 
 /**
  * Function for initializing SPI communication on Atmel AVR ICs that have a dedicated SPI module.
@@ -174,7 +166,6 @@ uint64_t hexArrayToUint64_t(uint8_t array[], size_t size);
 /**
  * Function for transmitting a hex number via SPI, with SS line control.
  ** For numBytes parameter, it is recommended to define a custom value called [HEX_DATA_BYTES].
- ** By defining [HEX_DATA_BYTES] a compiler warning is avoided, or else it is set to 8.
  *! [HEX_DATA_BYTES] has to be less or equal to 8!
  *
  * @param SS_PORTx Slave select PORTx register

@@ -4,7 +4,7 @@
  *
  * Header file for defining pin registers for a specific device.
  *
- * @date 2024-03-06
+ * @date 2024-03-08
  */
 
 #ifndef AVR_SPI_PIN_DEFINES_H_
