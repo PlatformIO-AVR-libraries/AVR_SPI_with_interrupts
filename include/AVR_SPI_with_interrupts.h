@@ -54,7 +54,7 @@
 #define DEFAULT_SS_CONTROL  1
 
 /**
- * Function for initializing SPI communication on Atmel AVR ICs that have a dedicated SPI module.
+ * Function for initializing SPI communication on Atmel AVR 8-bit ICs that have a dedicated SPI module.
  ** This function doesn't handle multiple slave devices, manual control of multiple SS lines is mandatory.
  *! Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!
  *
@@ -127,7 +127,7 @@ void SPI_putUint8_t(uint8_t data);
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param data uint8_t that is going to be sent via SPI
+ * @param data uint8_t that is going to be transmitted via SPI
  */
 void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t data);
 
@@ -138,15 +138,15 @@ void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t 
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param data char pointer that pints to an array element (string)
+ * @param data char pointer that pints to an array element (string), for transmissio via SPI
  */
 void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, char *data);
 
 /**
  * Function that reads an uint8_t from SPDR, with SS line control
  *
- * @param SS_PORTxSlave select PORTx register
- * @param SS_PORTxnSlave select PORTxn register
+ * @param SS_PORTx select PORTx register
+ * @param SS_PORTxn select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
  * @return A uint8_t that is read from SPDR register
@@ -173,7 +173,7 @@ uint64_t hexArrayToUint64_t(uint8_t array[], size_t size);
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
  * @param numBytes number of hex bytes that are going to be sent via SPI.
- * @param hexNumber hex number that is going to be sent via SPI
+ * @param hexNumber hex number that is going to be transmitted via SPI
  */
 void SPI_transmitHex(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t numBytes, uint64_t hexNumber);
 
