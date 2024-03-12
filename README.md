@@ -11,7 +11,8 @@ Library may work with other compilers or libraries, but this has not been tested
 
 ## Library functions:
 
-Function for initializing SPI communication on Atmel AVR 8-bit ICs that have a dedicated SPI module. This function doesn't handle multiple slave devices, manual control of multiple SS lines is mandatory. ***Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!***
+Function for initializing SPI communication on Atmel AVR 8-bit ICs that have a dedicated SPI module. This function doesn't handle multiple slave devices, manual control of multiple SS lines is mandatory.\
+***Make sure that SPI clock frequency that master generates is less than slave device F\_CPU/4!!!!***
 
 ```c
 void SPI_init(uint8_t deviceMode, uint8_t dataOrder, uint8_t SPIMode, uint8_t clockRate);
