@@ -4,13 +4,13 @@
  *
  * Interrupt driven SPI library .cpp file
  *
- * @date 2024-03-08
+ * @date 2024-03-13
  */
 
 #include "AVR_SPI_with_interrupts.h"
 
 /**
- * Function for initializing SPI communication on Atmel AVR 8-bit ICs that have a dedicated SPI module.
+ * Function for initializing SPI communication on Microchip AVR 8-bit microcontrollers that have a dedicated SPI module.
  ** This function doesn't handle multiple slave devices, manual control of multiple SS lines is mandatory.
  *! Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!
  *
