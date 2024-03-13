@@ -10,9 +10,9 @@
 #include "AVR_SPI_with_interrupts.h"
 
 /**
- * Function for initializing SPI communication on Microchip AVR 8-bit microcontrollers that have a dedicated SPI module.
- ** This function doesn't handle multiple slave devices, manual control of multiple SS lines is mandatory.
- *! Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!
+ * Function for initializing SPI communication on Atmel AVR 8-bit microcontrollers that have a dedicated SPI module.
+ ** This function doesn't handle multiple slave devices; manual control of multiple SS lines is mandatory.
+ *! Make sure that SPI clock frequency that master generates is less than slave device F\_CPU/4!!!!
  *
  * @param deviceMode master or slave mode
  * @param dataOrder least or most significant bit first
@@ -47,10 +47,10 @@ void SPI_init(uint8_t deviceMode, uint8_t dataOrder, uint8_t SPIMode, uint8_t cl
 }
 
 /**
- * Function that returns an uint8_t from master SPDR register
- * Write dummy data to SPDR register to generate SCK for transmission
+ * Function that returns an uint8_t from master SPDR register.
+ * Write dummy data to SPDR register to generate SCK for transmission.
  *
- * @return returns a uint8_t from SPDR register
+ * @return uint8_t from SPDR register
  */
 uint8_t SPI_masterReadUint8_t()
 {
@@ -63,9 +63,9 @@ uint8_t SPI_masterReadUint8_t()
 }
 
 /**
- * Function that returns an uint8_t from SPDR register
+ * Function that returns an uint8_t from SPDR register.
  *
- * @return returns a uint8_t from SPDR register
+ * @return uint8_t from SPDR register
  */
 uint8_t SPI_readUint8_t()
 {
@@ -102,7 +102,7 @@ ISR(SPI_STC_vect)
 }
 
 /**
- * Function that sets all array elements to '\0'
+ * Function that sets all array elements to '\0'.
  *
  * @param array array to be flushed
  * @param size number of array elements
@@ -114,12 +114,12 @@ void flushBuffer(uint8_t array[], size_t size)
 }
 
 /**
- * Function that compares two strings. First string consists of uint8_t characters, second string consists of char characters.
+ * Function that compares two strings. First string consists of uint8_t characters, and the second string consists of char characters.
  *
  * @param str1 string of uint8_t characters
  * @param str2 string of char characters
  * @return 0 if strings are equal, >0 if the first non-matching character in str1 is greater (in ASCII) than that of str2,
- * <0 	if the first non-matching character in str1 is lower (in ASCII) than that of str2
+ * <0 if the first non-matching character in str1 is lower (in ASCII) than that of str2
  */
 int SPI_strcmp(uint8_t *str1, char *str2)
 {
@@ -127,9 +127,9 @@ int SPI_strcmp(uint8_t *str1, char *str2)
 }
 
 /**
- * Function that checks if SPI data transmiossion is complete.
+ * Function that checks if SPI data transmission is complete.
  *
- * @return Returns true if [STRING_END_CHAR] is reached, else return false
+ * @return true if [STRING_END_CHAR] is reached; else, return false
  */
 bool SPI_readAll()
 {
@@ -175,7 +175,7 @@ void SPI_masterPutUint8_t(uint8_t data)
 }
 
 /**
- * Writes an uint8_t to SPDR register
+ * Writes an uint8_t to SPDR register.
  *
  * @param data uint8_t that is going to be written to SPDR register
  */
@@ -196,7 +196,7 @@ void SPI_putUint8_t(uint8_t data)
  * @param SS_PORTxn Slave select PORTxn register
  * @param SSmode choose if data is transmitted when pulling SS low (default) or when pulling SS high.
  * This is usefull when inverting schmitt triggers are used for SS line controll on master side.
- * @param data uint8_t that is going to be sent via SPI
+ * @param data uint8_t that is going to be transmitted via SPI
  */
 void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmode, uint8_t data)
 {
@@ -215,7 +215,7 @@ void SPI_transmitUint8_t(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t 
 }
 
 /**
- * Function for transmitting a string of chars via SPI, with SS line control
+ * Function for transmitting a string of chars via SPI, with SS line control.
  *
  * @param SS_PORTx Slave select PORTx register
  * @param SS_PORTxn Slave select PORTxn register
@@ -245,7 +245,7 @@ void SPI_transmitString(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t S
 }
 
 /**
- * Function that reads an uint8_t from SPDR, with SS line control
+ * FFunction that reads an uint8_t from SPDR, with SS line control.
  *
  * @param SS_PORTx select PORTx register
  * @param SS_PORTxn select PORTxn register
