@@ -11,7 +11,7 @@
  * Slave device toggles an LED when receiving the message.
  * Default connection for SS pin is used, refer to ATmega32 datasheet (see ATmega32 pinout).
  *
- * @date 2024-03-08
+ * @date 2024-04-19
  */
 
 // custom libraries
