@@ -1,5 +1,5 @@
 /**
- * @file Slave_ATmega88.cpp
+ * @file Slave_ATmega88.c
  * @author Lukas Ternjej
  *
  * This is a simple example for receiving a hex data message via SPI.

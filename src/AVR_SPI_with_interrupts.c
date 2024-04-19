@@ -1,8 +1,8 @@
 /**
- * @file AVR_SPI_with_interrupts.cpp
+ * @file AVR_SPI_with_interrupts.c
  * @author Lukas Ternjej
  *
- * Interrupt driven SPI library .cpp file
+ * Interrupt driven SPI library .c file
  *
  * @date 2024-03-13
  */
