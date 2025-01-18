@@ -5,7 +5,7 @@
  * Header file that is going to be included in main project file
  * Defines all necessary functions, constants and variables.
  *
- * @date 2024-03-13
+ * @date 2025-01-19
  */
 
 #ifndef AVR_SPI_WITH_INTERRUPTS_H_
@@ -56,7 +56,7 @@
 /**
  * Function for initializing SPI communication on Atmel AVR 8-bit microcontrollers that have a dedicated SPI module.
  ** This function doesn't handle multiple slave devices; manual control of multiple SS lines is mandatory.
- *! Make sure that SPI clock frequency that master generates is less than slave device F\_CPU/4!!!!
+ *! Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!
  *
  * @param deviceMode master or slave mode
  * @param dataOrder least or most significant bit first
