@@ -4,7 +4,7 @@
  *
  * Interrupt driven SPI library .c file
  *
- * @date 2024-04-19
+ * @date 2025-01-19
  */
 
 #include "AVR_SPI_with_interrupts.h"
@@ -12,7 +12,7 @@
 /**
  * Function for initializing SPI communication on Atmel AVR 8-bit microcontrollers that have a dedicated SPI module.
  ** This function doesn't handle multiple slave devices; manual control of multiple SS lines is mandatory.
- *! Make sure that SPI clock frequency that master generates is less than slave device F\_CPU/4!!!!
+ *! Make sure that SPI clock frequency that master generates is less than slave device F_CPU/4!!!!
  *
  * @param deviceMode master or slave mode
  * @param dataOrder least or most significant bit first
@@ -171,7 +171,7 @@ void SPI_masterPutUint8_t(uint8_t data)
     SPDR = data;     // write data to SPI data register
 
     while(!(SPSR & (1 << SPIF)))
-        ;            // wait till transmission complete
+        ;     // wait till transmission complete
 }
 
 /**
@@ -313,7 +313,7 @@ void SPI_transmitHex(volatile uint8_t *SS_PORTx, uint8_t SS_PORTxn, uint8_t SSmo
     for(int i = numBytes - 1; i >= 0; i--)
         SPI_masterPutUint8_t((hexNumber >> (i * 8)) & mask);     // Send each byte of the hexadecimal number
 
-    SPI_masterPutUint8_t(DATA_END_CHAR);                         // terminate with [DATA_END_CHAR]
+    SPI_masterPutUint8_t(DATA_END_CHAR);     // terminate with [DATA_END_CHAR]
 
     *SS_PORTx = (SSmode == DEFAULT_SS_CONTROL) * pullHigh + (SSmode == INVERTED_SS_CONTROL) * pullLow;
     // in default mode pull SS pin high to end transmision
